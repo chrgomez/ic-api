@@ -8,6 +8,7 @@ public class ProjectCi {
     
     public static void main(String[] args) {
         SpringApplication.run(ProjectCi.class, args);
+        System.out.println("Probando CI");
         System.out.println("¡API Spring Boot Iniciada Correctamente!");
     }
 }
