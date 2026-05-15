@@ -19,6 +19,8 @@
 
     <properties>
         <java.version>17</java.version> <!-- Si instalaste Java 21, cambia este número a 21 -->
+        <!-- Le decimos a Maven dónde está el 'main' -->
+        <start-class>com.utn.project.ci.ProjectCi</start-class> 
     </properties>
 
     <dependencies>
@@ -38,7 +40,6 @@
         <dependency>
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
-            <scope>runtime</scope>
         </dependency>
 
         <!-- Base de datos H2 en memoria (Vital para los tests del pipeline CI que pide la UTN) -->
