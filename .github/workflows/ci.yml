@@ -1,27 +1,52 @@
-name: Java CI
+name: CI Pipeline - Spring Boot
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
 
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
-  build:
+  build-and-test:
 
     runs-on: ubuntu-latest
 
     steps:
 
-    - name: Descargar código
-      uses: actions/checkout@v4
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
 
-    - name: Configurar Java
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
+      - name: Configurar Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
-    - name: Compilar y testear
-      run: mvn clean test
+      - name: Dar permisos al Maven Wrapper
+        run: chmod +x mvnw
+
+      - name: Compilar y ejecutar tests
+        run: ./mvnw clean test
+
+      - name: Notificación Slack OK
+        if: success()
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_COLOR: good
+          SLACK_TITLE: "CI EXITOSO"
+          SLACK_MESSAGE: "El pipeline de project-ci finalizó correctamente"
+          SLACK_FOOTER: "GitHub Actions"
+
+      - name: Notificación Slack ERROR
+        if: failure()
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_COLOR: danger
+          SLACK_TITLE: "CI FALLÓ"
+          SLACK_MESSAGE: "El pipeline de project-ci falló"
+          SLACK_FOOTER: "GitHub Actions"
