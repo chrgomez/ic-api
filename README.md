@@ -1,3 +1,5 @@
+![CI](https://github.com/chrgomez/ic-api/actions/workflows/ci.yml/badge.svg)
+
 # Project CI - API de Gestión de Tareas
 
 Proyecto desarrollado en Java con Spring Boot para demostrar un entorno de Integración Continua (CI) utilizando GitHub Actions y notificaciones automáticas en Slack.
@@ -48,7 +50,7 @@ El pipeline se ejecuta automáticamente al realizar un `git push` sobre la rama 
 ### Clonar repositorio
 
 ```bash
-git clone https://github.com/TU_USUARIO/TU_REPO.git
+git clone https://github.com/chrgomez/ic-api.git
 ```
 
 ### Ejecutar aplicación
