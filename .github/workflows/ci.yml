@@ -1,4 +1,4 @@
-name: CI Pipeline - Spring Boot
+name: CI/CD Pipeline - Spring Boot
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -9,8 +9,10 @@ on:
       - main
 
 jobs:
-  build-and-test:
 
+  ci:
+
+    name: Integración Continua
     runs-on: ubuntu-latest
 
     steps:
@@ -30,31 +32,65 @@ jobs:
       - name: Ejecutar tests automatizados
         run: ./mvnw test
 
+  cd:
+
+    name: Entrega Continua
+    runs-on: ubuntu-latest
+
+    needs: ci
+
+    steps:
+
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Dar permisos al Maven Wrapper
+        run: chmod +x mvnw
+
       - name: Generar archivo JAR
         run: ./mvnw package -DskipTests
 
-      - name: Guardar artefacto JAR
+      - name: Publicar artefacto
         uses: actions/upload-artifact@v4
         with:
           name: project-ci-jar
           path: target/*.jar
 
+  notification:
+
+    name: Notificaciones
+    runs-on: ubuntu-latest
+
+    needs:
+      - ci
+      - cd
+
+    if: always()
+
+    steps:
+
       - name: Notificación Slack OK
-        if: success()
+        if: needs.ci.result == 'success' && needs.cd.result == 'success'
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_COLOR: good
-          SLACK_TITLE: "CI EXITOSO"
-          SLACK_MESSAGE: "Tests y empaquetado completados correctamente"
+          SLACK_TITLE: "PIPELINE EXITOSO"
+          SLACK_MESSAGE: "CI/CD ejecutado correctamente"
           SLACK_FOOTER: "GitHub Actions"
 
       - name: Notificación Slack ERROR
-        if: failure()
+        if: needs.ci.result == 'failure' || needs.cd.result == 'failure'
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_COLOR: danger
-          SLACK_TITLE: "CI FALLÓ"
-          SLACK_MESSAGE: "El pipeline falló"
+          SLACK_TITLE: "PIPELINE FALLÓ"
+          SLACK_MESSAGE: "Hubo errores en el pipeline CI/CD"
           SLACK_FOOTER: "GitHub Actions"
