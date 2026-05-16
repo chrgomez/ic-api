@@ -1,15 +1,10 @@
 name: CI Pipeline - Spring Boot
 
-
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 on:
   push:
-    branches:
-      - main
-
-  pull_request:
     branches:
       - main
 
@@ -32,8 +27,17 @@ jobs:
       - name: Dar permisos al Maven Wrapper
         run: chmod +x mvnw
 
-      - name: Compilar y ejecutar tests
-        run: ./mvnw clean test
+      - name: Ejecutar tests automatizados
+        run: ./mvnw test
+
+      - name: Generar archivo JAR
+        run: ./mvnw package -DskipTests
+
+      - name: Guardar artefacto JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: project-ci-jar
+          path: target/*.jar
 
       - name: Notificación Slack OK
         if: success()
@@ -42,7 +46,7 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_COLOR: good
           SLACK_TITLE: "CI EXITOSO"
-          SLACK_MESSAGE: "El pipeline de project-ci finalizó correctamente"
+          SLACK_MESSAGE: "Tests y empaquetado completados correctamente"
           SLACK_FOOTER: "GitHub Actions"
 
       - name: Notificación Slack ERROR
@@ -52,5 +56,5 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_COLOR: danger
           SLACK_TITLE: "CI FALLÓ"
-          SLACK_MESSAGE: "El pipeline de project-ci falló"
+          SLACK_MESSAGE: "El pipeline falló"
           SLACK_FOOTER: "GitHub Actions"
