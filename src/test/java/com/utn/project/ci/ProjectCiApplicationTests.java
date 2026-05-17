@@ -8,5 +8,6 @@ class ProjectCiApplicationTests {
 
     @Test
     void contextLoads() {
+        System.out.println("ProjectCiApplicationTests.contextLoads PASSED");
     }
 }

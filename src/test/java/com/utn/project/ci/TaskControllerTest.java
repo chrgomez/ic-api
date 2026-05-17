@@ -21,7 +21,7 @@ public class TaskControllerTest {
     private TestRestTemplate restTemplate;
 
     @Test
-    void noDebeCrearTareaSinNombre() {
+    void noDebeCrearTareaSinTitulo() {
 
         Task tarea = new Task();
 
@@ -34,13 +34,15 @@ public class TaskControllerTest {
 
         HttpEntity<Task> request = new HttpEntity<>(tarea, headers);
 
-        ResponseEntity<String> response =
-                restTemplate.postForEntity(
+        ResponseEntity<String> response
+                = restTemplate.postForEntity(
                         "http://localhost:" + port + "/api/tasks",
                         request,
                         String.class
                 );
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
+        System.out.println("TaskControllerTest.noDebeCrearTareaSinTitulo PASSED");
     }
 }
