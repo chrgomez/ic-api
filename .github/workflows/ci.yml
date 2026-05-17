@@ -31,7 +31,7 @@ jobs:
         run: chmod +x mvnw
 
       - name: Ejecutar tests automatizados
-        run: ./mvnw test
+        run: ./mvnw test -Dsurefire.printSummary=true
 
   cd:
 
