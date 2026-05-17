@@ -5,7 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Entity
@@ -19,7 +20,7 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @NotBlank
     private String title;
 
     private String description;
@@ -27,6 +28,7 @@ public class Task {
     // Inicializamos con false por defecto
     private boolean completed = false;
 
+    @NotNull
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
@@ -44,4 +46,9 @@ public class Task {
     public void setProject(Project project) {
         this.project = project;
     }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    
 }
