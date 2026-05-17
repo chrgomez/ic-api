@@ -25,6 +25,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+          cache: 'maven'
 
       - name: Dar permisos al Maven Wrapper
         run: chmod +x mvnw
@@ -49,6 +50,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+          cache: 'maven'
 
       - name: Dar permisos al Maven Wrapper
         run: chmod +x mvnw
