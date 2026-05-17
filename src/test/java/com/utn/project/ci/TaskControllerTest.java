@@ -33,7 +33,7 @@ public class TaskControllerTest {
 
         ResponseEntity<String> response =
                 restTemplate.postForEntity(
-                        "http://localhost:" + port + "/tasks",
+                        "http://localhost:" + port + "/api/tasks",
                         request,
                         String.class
                 );
