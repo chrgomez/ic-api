@@ -1,6 +1,7 @@
 package com.utn.project.ci;
 
 import com.utn.project.ci.entity.Task;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,7 +25,8 @@ public class TaskControllerTest {
 
         Task tarea = new Task();
 
-        tarea.setTitle("");
+        tarea.setTitle("Tarea");
+        tarea.setCreatedAt(LocalDateTime.now());
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

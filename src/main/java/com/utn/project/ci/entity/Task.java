@@ -50,5 +50,9 @@ public class Task {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
     
 }
