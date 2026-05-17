@@ -27,6 +27,7 @@ public class TaskControllerTest {
 
         tarea.setTitle("Tarea");
         tarea.setCreatedAt(LocalDateTime.now());
+        tarea.setProject(null);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
