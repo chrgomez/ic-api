@@ -1,5 +1,6 @@
 package com.utn.project.ci.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,7 @@ public class Project {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("project") // <-- CAMBIO AQUÍ
     private List<Task> tasks = new ArrayList<>();
 
     // Método que se ejecuta automáticamente antes de guardar en la BD por primera vez

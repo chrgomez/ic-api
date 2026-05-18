@@ -1,6 +1,7 @@
 package com.utn.project.ci.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,7 +34,7 @@ public class Task {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
-    @JsonIgnore 
+    @JsonIgnoreProperties("tasks") 
     private Project project;
 
     // Método que se ejecuta automáticamente antes de guardar en la BD por primera vez
