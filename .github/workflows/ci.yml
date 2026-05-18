@@ -10,13 +10,15 @@ on:
 
 jobs:
 
-  # JOB 1: INTEGRACIÓN CONTINUA (Test)
+  # JOB 1: INTEGRACIÓN CONTINUA (Test + SonarQube)
   ci:
-    name: Integración Continua
+    name: Integración Continua y SonarQube
     runs-on: ubuntu-latest
     steps:
       - name: Clonar repositorio
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # CRÍTICO: Sonar necesita todo el historial de git para funcionar bien
 
       - name: Configurar Java 17
         uses: actions/setup-java@v4
@@ -28,8 +30,16 @@ jobs:
       - name: Dar permisos al Maven Wrapper
         run: chmod +x mvnw
 
-      - name: Ejecutar tests automatizados
-        run: ./mvnw test -Dsurefire.printSummary=true
+      # Corre los tests y envía el reporte a SonarCloud
+      - name: Test y Análisis de SonarQube
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Este secreto ya viene incluido en GitHub, no debes crearlo
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}    # El que creaste en el paso 1
+        run: >
+          ./mvnw clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar 
+          -Dsonar.projectKey=chrgomez_project-ci 
+          -Dsonar.organization=chrgomez
+          -Dsonar.host.url=https://sonarcloud.io
 
   # JOB 2: ENTREGA CONTINUA (Build)
   cd_delivery:
