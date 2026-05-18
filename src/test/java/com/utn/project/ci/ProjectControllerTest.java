@@ -19,12 +19,11 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ProjectController.class) // Levanta SOLO el ProjectController
-public class ProjectControllerTest {
+class ProjectControllerTest {
 
     @Autowired
     private MockMvc mockMvc; // Simula peticiones HTTP (Postman interno)
