@@ -51,6 +51,9 @@ jobs:
         id: sonarqube_quality_gate
         uses: sonarsource/sonarqube-quality-gate-action@master
         timeout-minutes: 5
+        with:
+          # Le indicamos la ruta correcta donde Maven guarda el archivo
+          scanMetadataReportFile: target/sonar/report-task.txt
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
