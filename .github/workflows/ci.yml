@@ -10,15 +10,20 @@ on:
 
 jobs:
 
-  # JOB 1: INTEGRACIÓN CONTINUA (Test + SonarQube)
+  #JOB 1: INTEGRACIÓN CONTINUA (Test + SonarQube)
   ci:
     name: Integración Continua y SonarQube
     runs-on: ubuntu-latest
+
+    # Necesitamos exportar las variables de este job para que el job de notificaciones las lea
+    outputs:
+      sonar_status: ${{ steps.sonarqube_quality_gate.outputs.quality-gate-status }}
+
     steps:
       - name: Clonar repositorio
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # CRÍTICO: Sonar necesita todo el historial de git para funcionar bien
+          fetch-depth: 0
 
       - name: Configurar Java 17
         uses: actions/setup-java@v4
@@ -30,16 +35,25 @@ jobs:
       - name: Dar permisos al Maven Wrapper
         run: chmod +x mvnw
 
-      # Corre los tests y envía el reporte a SonarCloud
+      # Corre los tests y envía a SonarCloud
       - name: Test y Análisis de SonarQube
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Este secreto ya viene incluido en GitHub, no debes crearlo
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}    # El que creaste en el paso 1
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: >
-          ./mvnw clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar 
-          -Dsonar.projectKey=chrgomez_project-ci 
+          ./mvnw clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+          -Dsonar.projectKey=chrgomez_ic-api
           -Dsonar.organization=chrgomez
           -Dsonar.host.url=https://sonarcloud.io
+
+      # ESTE ES EL PASO NUEVO: Espera la respuesta de SonarCloud
+      - name: SonarQube Quality Gate check
+        id: sonarqube_quality_gate
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
 
   # JOB 2: ENTREGA CONTINUA (Build)
   cd_delivery:
@@ -57,7 +71,7 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Generar archivo JAR        
+      - name: Generar archivo JAR
         run: chmod +x mvnw && ./mvnw clean package -DskipTests
 
       - name: Guardar artefacto JAR
@@ -111,8 +125,11 @@ jobs:
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_COLOR: good
-          SLACK_TITLE: "PIPELINE EXITOSO"
-          SLACK_MESSAGE: "Se testeó, compiló y publicó la imagen Docker correctamente 🚀"
+          SLACK_TITLE: "PIPELINE EXITOSO ✅"
+          # Aquí agregamos la línea de SonarQube
+          SLACK_MESSAGE: |
+            Se testeó, compiló y publicó la imagen Docker correctamente 🚀
+            *Calidad de Código (SonarQube):* ${{ needs.ci.outputs.sonar_status }}
           SLACK_FOOTER: "GitHub Actions"
 
       - name: Notificación Slack ERROR
@@ -121,6 +138,9 @@ jobs:
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_COLOR: danger
-          SLACK_TITLE: "PIPELINE FALLÓ"
-          SLACK_MESSAGE: "Hubo errores en el pipeline CI/CD ❌"
+          SLACK_TITLE: "PIPELINE FALLÓ ❌"
+          # Aquí también agregamos la info, por si falló por culpa de Sonar
+          SLACK_MESSAGE: |
+            Hubo errores en el pipeline CI/CD o no se cumplieron los estándares.
+            *Calidad de Código (SonarQube):* ${{ needs.ci.outputs.sonar_status || 'No completado' }}
           SLACK_FOOTER: "GitHub Actions"

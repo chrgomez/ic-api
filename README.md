@@ -1,6 +1,8 @@
 ![CI](https://github.com/chrgomez/ic-api/actions/workflows/ci.yml/badge.svg)
 
-# Project CI - API de Gestión de Tareas
+[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=chrgomez_ic-api&token=2242f0e66f688a7b3e15be749025291d36ceb659)](https://sonarcloud.io/summary/new_code?id=chrgomez_ic-api)
+
+# Project CI - API de Gestión de Tareas de Proyectos
 
 Proyecto desarrollado en Java con Spring Boot para demostrar un entorno de Integración Continua (CI) utilizando GitHub Actions y notificaciones automáticas en Slack.
 
