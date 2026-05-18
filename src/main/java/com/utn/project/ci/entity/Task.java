@@ -28,8 +28,7 @@ public class Task {
     // Inicializamos con false por defecto
     private boolean completed = false;
 
-    @NotNull
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
