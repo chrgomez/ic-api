@@ -1,48 +1,95 @@
 package com.utn.project.ci;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.utn.project.ci.controller.TaskController;
+import com.utn.project.ci.entity.Project;
 import com.utn.project.ci.entity.Task;
-import java.time.LocalDateTime;
+import com.utn.project.ci.service.TaskService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.*;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.Arrays;
+import java.util.Optional;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@WebMvcTest(TaskController.class) // Levanta SOLO el TaskController
 public class TaskControllerTest {
 
-    @LocalServerPort
-    private int port;
+    @Autowired
+    private MockMvc mockMvc;
 
     @Autowired
-    private TestRestTemplate restTemplate;
+    private ObjectMapper objectMapper;
+
+    @MockBean
+    private TaskService taskService;
+
+    private Task mockTask;
+
+    @BeforeEach
+    void setUp() {
+        Project mockProject = new Project();
+        mockProject.setId(1L);
+
+        mockTask = new Task();
+        mockTask.setId(1L);
+        mockTask.setTitle("Tarea Test");
+        mockTask.setDescription("Desc Test");
+        mockTask.setCompleted(false);
+        mockTask.setProject(mockProject);
+    }
 
     @Test
-    void noDebeCrearTareaSinTitulo() {
+    void debeDevolverTodasLasTareas() throws Exception {
+        Mockito.when(taskService.getAllTasks()).thenReturn(Arrays.asList(mockTask));
 
-        Task tarea = new Task();
+        mockMvc.perform(get("/api/tasks"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].title").value("Tarea Test"));
+    }
 
-        tarea.setTitle(null);
-        tarea.setCreatedAt(LocalDateTime.now());
-        tarea.setProject(null);
+    @Test
+    void debeDevolverTareaPorId() throws Exception {
+        Mockito.when(taskService.getTaskById(1L)).thenReturn(Optional.of(mockTask));
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        mockMvc.perform(get("/api/tasks/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("Tarea Test"));
+    }
 
-        HttpEntity<Task> request = new HttpEntity<>(tarea, headers);
+    @Test
+    void debeDevolver404SiTareaNoExiste() throws Exception {
+        Mockito.when(taskService.getTaskById(99L)).thenReturn(Optional.empty());
 
-        ResponseEntity<String> response
-                = restTemplate.postForEntity(
-                        "http://localhost:" + port + "/api/tasks",
-                        request,
-                        String.class
-                );
+        mockMvc.perform(get("/api/tasks/99"))
+                .andExpect(status().isNotFound());
+    }
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    @Test
+    void debeCrearUnaTarea() throws Exception {
+        Mockito.when(taskService.createTask(any(Task.class))).thenReturn(mockTask);
 
-        System.out.println("TaskControllerTest.noDebeCrearTareaSinTitulo PASSED");
+        mockMvc.perform(post("/api/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(mockTask)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.title").value("Tarea Test"));
+    }
+
+    @Test
+    void debeEliminarUnaTarea() throws Exception {
+        Mockito.doNothing().when(taskService).deleteTask(1L);
+
+        mockMvc.perform(delete("/api/tasks/1"))
+                .andExpect(status().isNoContent());
     }
 }
