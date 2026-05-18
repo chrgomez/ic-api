@@ -1,5 +1,7 @@
 package com.utn.project.ci.controller;
 
+import com.utn.project.ci.dto.TaskRequestDTO;
+import com.utn.project.ci.dto.TaskResponseDTO;
 import com.utn.project.ci.entity.Task;
 import com.utn.project.ci.service.TaskService;
 import jakarta.validation.Valid;
@@ -37,9 +39,20 @@ public class TaskController {
 
     // POST: http://localhost:8080/api/tasks
     @PostMapping
-    public ResponseEntity<Task> create(@Valid @RequestBody Task task) {
-        Task createdTask = taskService.createTask(task);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
+    public ResponseEntity<TaskResponseDTO> create(
+            @Valid @RequestBody TaskRequestDTO request) {
+
+        Task createdTask = taskService.createTask(request);
+
+        TaskResponseDTO response = TaskResponseDTO.builder()
+                .id(createdTask.getId())
+                .title(createdTask.getTitle())
+                .description(createdTask.getDescription())
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(response);
     }
 
     // DELETE: http://localhost:8080/api/tasks/1

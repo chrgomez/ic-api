@@ -1,5 +1,7 @@
 package com.utn.project.ci.controller;
 
+import com.utn.project.ci.dto.ProjectRequestDTO;
+import com.utn.project.ci.dto.ProjectResponseDTO;
 import com.utn.project.ci.entity.Project;
 import com.utn.project.ci.service.ProjectService;
 import org.springframework.http.HttpStatus;
@@ -13,7 +15,7 @@ import java.util.List;
 public class ProjectController {
 
     private final ProjectService projectService;
-    
+
     // CONSTRUCTOR MANUAL: Spring inyecta el servicio automáticamente aquí
     public ProjectController(ProjectService projectService) {
         this.projectService = projectService;
@@ -36,10 +38,21 @@ public class ProjectController {
 
     // POST: http://localhost:8080/api/projects
     @PostMapping
-    public ResponseEntity<Project> create(@RequestBody Project project) {
-        Project createdProject = projectService.createProject(project);
-        // Retornamos un status 201 (Created)
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdProject);
+    public ResponseEntity<ProjectResponseDTO> create(
+            @RequestBody ProjectRequestDTO request) {
+
+        Project createdProject = projectService.createProject(request);
+
+        ProjectResponseDTO response = ProjectResponseDTO.builder()
+                .id(createdProject.getId())
+                .name(createdProject.getName())
+                .description(createdProject.getDescription())
+                .createdAt(createdProject.getCreatedAt())
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(response);
     }
 
     // DELETE: http://localhost:8080/api/projects/1

@@ -2,6 +2,7 @@ package com.utn.project.ci;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.utn.project.ci.controller.ProjectController;
+import com.utn.project.ci.dto.ProjectRequestDTO;
 import com.utn.project.ci.entity.Project;
 import com.utn.project.ci.service.ProjectService;
 import org.junit.jupiter.api.BeforeEach;
@@ -74,7 +75,7 @@ public class ProjectControllerTest {
 
     @Test
     void debeCrearUnProyecto() throws Exception {
-        Mockito.when(projectService.createProject(any(Project.class))).thenReturn(mockProject);
+        Mockito.when(projectService.createProject(any(ProjectRequestDTO.class))).thenReturn(mockProject);
 
         mockMvc.perform(post("/api/projects")
                         .contentType(MediaType.APPLICATION_JSON)

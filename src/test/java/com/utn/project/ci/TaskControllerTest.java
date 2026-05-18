@@ -2,6 +2,7 @@ package com.utn.project.ci;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.utn.project.ci.controller.TaskController;
+import com.utn.project.ci.dto.TaskRequestDTO;
 import com.utn.project.ci.entity.Project;
 import com.utn.project.ci.entity.Task;
 import com.utn.project.ci.service.TaskService;
@@ -76,7 +77,7 @@ public class TaskControllerTest {
 
     @Test
     void debeCrearUnaTarea() throws Exception {
-        Mockito.when(taskService.createTask(any(Task.class))).thenReturn(mockTask);
+        Mockito.when(taskService.createTask(any(TaskRequestDTO.class))).thenReturn(mockTask);
 
         mockMvc.perform(post("/api/tasks")
                         .contentType(MediaType.APPLICATION_JSON)

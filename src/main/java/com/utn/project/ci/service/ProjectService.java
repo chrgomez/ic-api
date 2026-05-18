@@ -1,5 +1,6 @@
 package com.utn.project.ci.service;
 
+import com.utn.project.ci.dto.ProjectRequestDTO;
 import com.utn.project.ci.entity.Project;
 import com.utn.project.ci.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,13 @@ public class ProjectService {
     }
 
     // 3. Crear un nuevo proyecto
-    public Project createProject(Project project) {
+    public Project createProject(ProjectRequestDTO dto) {
+
+        Project project = new Project();
+
+        project.setName(dto.getName());
+        project.setDescription(dto.getDescription());
+
         return projectRepository.save(project);
     }
 
