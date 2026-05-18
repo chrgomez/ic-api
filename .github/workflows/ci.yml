@@ -47,8 +47,8 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Generar archivo JAR
-        run: chmod +x mvnw && ./mvnw package -DskipTests
+      - name: Generar archivo JAR        
+        run: chmod +x mvnw && ./mvnw clean package -DskipTests
 
       - name: Guardar artefacto JAR
         uses: actions/upload-artifact@v4

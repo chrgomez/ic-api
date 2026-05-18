@@ -25,7 +25,7 @@ public class TaskControllerTest {
 
         Task tarea = new Task();
 
-        tarea.setTitle("Tarea");
+        tarea.setTitle(null);
         tarea.setCreatedAt(LocalDateTime.now());
         tarea.setProject(null);
 
