@@ -1,5 +1,7 @@
 package com.utn.project.ci.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -8,7 +10,11 @@ import lombok.Getter;
 public class TaskResponseDTO {
 
     private Long id;
+    @NotBlank(message = "El título es obligatorio")
     private String title;
+    
     private String description;
-    private String status;
+    
+    @NotNull(message = "El ID del proyecto es obligatorio")
+    private Long projectId; // Fíjate que es solo un número, ¡mucho más fácil
 }

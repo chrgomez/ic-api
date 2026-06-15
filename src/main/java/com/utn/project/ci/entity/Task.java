@@ -32,7 +32,7 @@ public class Task {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "project_id", nullable = false)
-    @JsonIgnoreProperties("tasks") 
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "tasks"}) 
     private Project project;
 
     // Método que se ejecuta automáticamente antes de guardar en la BD por primera vez
