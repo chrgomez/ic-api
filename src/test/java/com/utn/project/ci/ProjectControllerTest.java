@@ -46,48 +46,48 @@ class ProjectControllerTest {
         mockProject.setCreatedAt(LocalDateTime.now());
     }
 
-//    @Test
-//    void debeDevolverTodosLosProyectos() throws Exception {
-//        Mockito.when(projectService.getAllProjects()).thenReturn(Arrays.asList(mockProject));
-//
-//        mockMvc.perform(get("/api/projects"))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$[0].name").value("Proyecto Test"));
-//    }
-//
-//    @Test
-//    void debeDevolverProyectoPorId() throws Exception {
-//        Mockito.when(projectService.getProjectById(1L)).thenReturn(Optional.of(mockProject));
-//
-//        mockMvc.perform(get("/api/projects/1"))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.name").value("Proyecto Test"));
-//    }
-//
-//    @Test
-//    void debeDevolver404SiProyectoNoExiste() throws Exception {
-//        Mockito.when(projectService.getProjectById(99L)).thenReturn(Optional.empty());
-//
-//        mockMvc.perform(get("/api/projects/99"))
-//                .andExpect(status().isNotFound());
-//    }
-//
-//    @Test
-//    void debeCrearUnProyecto() throws Exception {
-//        Mockito.when(projectService.createProject(any(ProjectRequestDTO.class))).thenReturn(mockProject);
-//
-//        mockMvc.perform(post("/api/projects")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(mockProject)))
-//                .andExpect(status().isCreated())
-//                .andExpect(jsonPath("$.name").value("Proyecto Test"));
-//    }
-//
-//    @Test
-//    void debeEliminarUnProyecto() throws Exception {
-//        Mockito.doNothing().when(projectService).deleteProject(1L);
-//
-//        mockMvc.perform(delete("/api/projects/1"))
-//                .andExpect(status().isNoContent());
-//    }
+    @Test
+    void debeDevolverTodosLosProyectos() throws Exception {
+        Mockito.when(projectService.getAllProjects()).thenReturn(Arrays.asList(mockProject));
+
+        mockMvc.perform(get("/api/projects"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name").value("Proyecto Test"));
+    }
+
+    @Test
+    void debeDevolverProyectoPorId() throws Exception {
+        Mockito.when(projectService.getProjectById(1L)).thenReturn(Optional.of(mockProject));
+
+        mockMvc.perform(get("/api/projects/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Proyecto Test"));
+    }
+
+    @Test
+    void debeDevolver404SiProyectoNoExiste() throws Exception {
+        Mockito.when(projectService.getProjectById(99L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/api/projects/99"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void debeCrearUnProyecto() throws Exception {
+        Mockito.when(projectService.createProject(any(ProjectRequestDTO.class))).thenReturn(mockProject);
+
+        mockMvc.perform(post("/api/projects")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(mockProject)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name").value("Proyecto Test"));
+    }
+
+    @Test
+    void debeEliminarUnProyecto() throws Exception {
+        Mockito.doNothing().when(projectService).deleteProject(1L);
+
+        mockMvc.perform(delete("/api/projects/1"))
+                .andExpect(status().isNoContent());
+    }
 }
