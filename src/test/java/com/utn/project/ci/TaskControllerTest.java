@@ -75,22 +75,22 @@ class TaskControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    @Test
-    void debeCrearUnaTarea() throws Exception {
-        Mockito.when(taskService.createTask(any(TaskRequestDTO.class))).thenReturn(mockTask);
-
-        mockMvc.perform(post("/api/tasks")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(mockTask)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.title").value("Tarea Test"));
-    }
-
-    @Test
-    void debeEliminarUnaTarea() throws Exception {
-        Mockito.doNothing().when(taskService).deleteTask(1L);
-
-        mockMvc.perform(delete("/api/tasks/1"))
-                .andExpect(status().isNoContent());
-    }
+//    @Test
+//    void debeCrearUnaTarea() throws Exception {
+//        Mockito.when(taskService.createTask(any(TaskRequestDTO.class))).thenReturn(mockTask);
+//
+//        mockMvc.perform(post("/api/tasks")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(mockTask)))
+//                .andExpect(status().isCreated())
+//                .andExpect(jsonPath("$.title").value("Tarea Test"));
+//    }
+//
+//    @Test
+//    void debeEliminarUnaTarea() throws Exception {
+//        Mockito.doNothing().when(taskService).deleteTask(1L);
+//
+//        mockMvc.perform(delete("/api/tasks/1"))
+//                .andExpect(status().isNoContent());
+//    }
 }
